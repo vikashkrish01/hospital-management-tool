@@ -32,7 +32,7 @@ public class PatientController {
   @Autowired	
   private PatientService patientService;
   
-  @PostMapping("/createPatient")
+  @PostMapping("/createNewPatient")
   public ResponseEntity<?> createNewPatient(@Valid @RequestBody Patient patient, BindingResult bindingResult){
 	  
 	  if(bindingResult.hasErrors()){
@@ -64,24 +64,24 @@ public class PatientController {
 //  
 //  
 //  
-//  @GetMapping("/getPatientById/{officialIdNumber}")
-//  public ResponseEntity<?> getPatientById(@PathVariable String officialIdNumber, Principal principal){
-//	  
-//	  Patient patient = patientService.findPatientByIdentifier(officialIdNumber, principal.getName());
-//	  return new ResponseEntity<Patient>(patient, HttpStatus.OK);
-//  }
-//  
-//  @GetMapping("/getPatient")
-//  public ResponseEntity<Iterable<Patient>> getPatient(Principal principal){
-//	  
-//	  return new ResponseEntity<Iterable<Patient>>(patientService.findAllPatients(principal.getName()), HttpStatus.OK);
-//  }
-//  
-//  @DeleteMapping("/deletePatient/{patientId}")
-//  public ResponseEntity<?> deletePatient(@PathVariable String patientId, Principal principal){
-//	  
-//	  patientService.deletePatientByIdentifier(patientId, principal.getName());
-//	  return new ResponseEntity<String>("Patient with " + patientId + " deleted", HttpStatus.OK);
-//  }
+  @GetMapping("/getPatientById/{systemIdNumber}")
+  public ResponseEntity<?> getPatientById(@PathVariable Long systemIdNumber, Principal principal){
+	  
+	  Patient patient = patientService.findPatientByIdentifier(systemIdNumber);
+	  return new ResponseEntity<Patient>(patient, HttpStatus.OK);
+  }
+ 
+  @GetMapping("/getPatients")
+  public ResponseEntity<Iterable<Patient>> getPatients(Principal principal){
+	  
+	  return new ResponseEntity<Iterable<Patient>>(patientService.findAllPatients(), HttpStatus.OK);
+  }
+  
+  @DeleteMapping("/deletePatient/{patientId}")
+  public ResponseEntity<?> deletePatient(@PathVariable Long patientId, Principal principal){
+	  
+	  patientService.deletePatientByIdentifier(patientId);
+	  return new ResponseEntity<String>("Patient with " + patientId + " deleted", HttpStatus.OK);
+  }
 	
 }

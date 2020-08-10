@@ -1,5 +1,6 @@
 package com.api.project.hospitalmanagement.entity;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,15 +19,20 @@ import javax.persistence.JoinTable;
 import javax.persistence.MapKey;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
-@Table(name = "patient")
+@Table(name = "PatientTable")
 public class Patient {
 
 	@Column
@@ -51,18 +57,41 @@ public class Patient {
     @NotNull
     @NotBlank(message ="Patient email is required")
 	private String email;
+    
+    
+  
+    @Column(updatable = false)
+    private LocalDateTime created_At;
+    
+    private LocalDateTime updated_At;
+    
+    @PrePersist
+    protected void onCreate(){
+        this.created_At = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate(){
+        this.updated_At = LocalDateTime.now();
+    }
+
 	
     @ElementCollection
-	@OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, fetch=FetchType.EAGER, orphanRemoval=true)
-	@MapKeyColumn(name = "meta_keys")
-	private Map<String,Information> metaData = new HashMap<String, Information>();
+    @CollectionTable(name="information_table")
+//	@OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, fetch=FetchType.EAGER, orphanRemoval=true)
+//    @JoinTable(
+//    		name="PatientInformationGroup",
+//    		joinColumns={@JoinColumn(name="fk_patient", referencedColumnName="id")},
+//    		inverseJoinColumns={@JoinColumn(name="fk_information", referencedColumnName="id")})
+//    	@MapKeyColumn(name = "key")
+	private Map<String,String> metaData = new HashMap<String, String>();
 	
 	public Patient(){
 		
 	}
 
 	public Patient(String patientName, String officialIdNumber, Long systemIdNumber, Date birthDate, String email,
-			Map<String, Information> metaData) {
+			Map<String, String> metaData) {
 		super();
 		this.patientName = patientName;
 		this.officialIdNumber = officialIdNumber;
@@ -112,12 +141,28 @@ public class Patient {
 		this.email = email;
 	}
 
-	public Map<String, Information> getMetaData() {
+	public Map<String, String> getMetaData() {
 		return metaData;
 	}
 
-	public void setMetaData(Map<String, Information> metaData) {
+	public void setMetaData(Map<String, String> metaData) {
 		this.metaData = metaData;
 	}
+	
+	  public LocalDateTime getCreated_At() {
+	        return created_At;
+	    }
+
+	    public void setCreated_At(LocalDateTime created_At) {
+	        this.created_At = created_At;
+	    }
+
+	    public LocalDateTime getUpdated_At() {
+	        return updated_At;
+	    }
+
+	    public void setUpdated_At(LocalDateTime updated_At) {
+	        this.updated_At = updated_At;
+	    }
 	
 }

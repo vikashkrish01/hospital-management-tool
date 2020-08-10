@@ -26,6 +26,9 @@ public class Information {
     @NotNull
 	private String officialIdNumber;
 	
+	@Column(name = "title")
+    private String title;
+
 	
 
 	@Column(name = "infoValue")
@@ -35,12 +38,13 @@ public class Information {
 	 @ManyToOne(fetch=FetchType.EAGER)
 	 private Patient patient;
 	 
-	 public Information(Long id, @NotNull String officialIdNumber, String infoValue, Patient patient) {
+	 public Information(Long id, @NotNull String officialIdNumber, String infoValue, String title, Patient patient) {
 		super();
 		this.id = id;
 		this.officialIdNumber = officialIdNumber;
 		this.infoValue = infoValue;
 		this.patient = patient;
+		this.title= title;
 	}
 
 
@@ -56,6 +60,16 @@ public class Information {
 
 		public void setOfficialIdNumber(String officialIdNumber) {
 			this.officialIdNumber = officialIdNumber;
+		}
+	
+		
+		public String getTitle() {
+			return title;
+		}
+
+
+		public void setTitle(String title) {
+			this.title = title;
 		}
 		
 	public Long getId() {
